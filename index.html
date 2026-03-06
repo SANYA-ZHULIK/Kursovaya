@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Охрана труда и техника безопасности - Тестирование</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <div class="auth-header">
+                <div class="logo">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                        <rect width="48" height="48" rx="12" fill="#1E3A5F"/>
+                        <path d="M24 8L24 16M24 32V40M8 24H16M32 24H40" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="24" cy="24" r="6" stroke="#2D7D46" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h2>Охрана труда и ТБ</h2>
+                <p id="auth-subtitle">Вход в систему тестирования</p>
+            </div>
+            
+            <form id="auth-form">
+                <div id="name-field" class="form-group hidden">
+                    <label for="full-name">ФИО</label>
+                    <input type="text" id="full-name" placeholder="Иванов Иван Иванович">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="example@mail.ru" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="auth-btn">Войти</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p id="auth-toggle">Нет аккаунта? <a href="#" onclick="toggleAuthMode(event)">Зарегистрироваться</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-small">
+                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+                        <rect width="48" height="48" rx="12" fill="#1E3A5F"/>
+                        <path d="M24 8L24 16M24 32V40M8 24H16M32 24H40" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="24" cy="24" r="6" stroke="#2D7D46" stroke-width="2"/>
+                    </svg>
+                </div>
+                <span class="sidebar-title">ОТ и ТБ</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="tests-list">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/>
+                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                    </svg>
+                    Тесты
+                </a>
+                <a href="#" class="nav-item" data-page="history">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    История
+                </a>
+                <a href="#" class="nav-item" data-page="stats">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="20" x2="12" y2="10"/>
+                        <line x1="18" y1="20" x2="18" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="16"/>
+                    </svg>
+                    Статистика
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">И</div>
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">Пользователь</span>
+                        <span class="user-role" id="user-role">Сотрудник</span>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                        <polyline points="16,17 21,12 16,7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Tests List Page -->
+            <div id="page-tests-list" class="page active">
+                <header class="page-header">
+                    <h1>Доступные тесты</h1>
+                    <p class="page-subtitle">Выберите тест для прохождения</p>
+                </header>
+                
+                <div id="tests-grid" class="tests-grid">
+                    <div class="loading"><div class="spinner"></div>Загрузка тестов...</div>
+                </div>
+            </div>
+
+            <!-- Test Page -->
+            <div id="page-test" class="page">
+                <header class="page-header">
+                    <button class="btn-back" onclick="backToTests()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15,18 9,12 15,6"/>
+                        </svg>
+                        К списку тестов
+                    </button>
+                    <h1 id="test-title">Тест</h1>
+                    <p class="page-subtitle" id="test-description"></p>
+                </header>
+                
+                <div class="test-info-bar">
+                    <span id="test-questions-count">5 вопросов</span>
+                    <span id="test-time-limit">Без ограничения времени</span>
+                    <span id="test-passing-score">Проходной балл: 70%</span>
+                </div>
+                
+                <div class="test-progress">
+                    <div class="test-progress-bar">
+                        <div class="test-progress-fill" id="test-progress-fill" style="width: 0%"></div>
+                    </div>
+                    <span class="test-progress-text" id="test-progress-text">Вопрос 1 из 5</span>
+                </div>
+                
+                <div class="test-container" id="test-container">
+                    <!-- Test questions will be loaded here -->
+                </div>
+                
+                <div class="test-footer">
+                    <button class="btn btn-secondary hidden" id="test-prev-btn" onclick="prevQuestion()">
+                        Назад
+                    </button>
+                    <button class="btn btn-primary" id="test-next-btn" onclick="nextQuestion()">
+                        Далее
+                    </button>
+                </div>
+            </div>
+
+            <!-- Test Result Page -->
+            <div id="page-test-result" class="page">
+                <header class="page-header">
+                    <h1>Результат теста</h1>
+                </header>
+                
+                <div class="test-result-card">
+                    <div class="result-icon" id="result-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                            <polyline points="22,4 12,14.01 9,11.01"/>
+                        </svg>
+                    </div>
+                    <h2 id="result-title">Тест пройден!</h2>
+                    <div class="result-score" id="result-score">85%</div>
+                    <p class="result-message" id="result-message">Поздравляем! Вы успешно сдали тест.</p>
+                    
+                    <div class="result-stats">
+                        <div class="result-stat">
+                            <span class="result-stat-value" id="result-correct">4</span>
+                            <span class="result-stat-label">Правильных ответов</span>
+                        </div>
+                        <div class="result-stat">
+                            <span class="result-stat-value" id="result-total">5</span>
+                            <span class="result-stat-label">Всего вопросов</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions">
+                        <button class="btn btn-secondary" onclick="retryTest()">Пройти заново</button>
+                        <button class="btn btn-primary" onclick="backToTests()">К списку тестов</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Page -->
+            <div id="page-history" class="page">
+                <header class="page-header">
+                    <h1>История тестирований</h1>
+                    <p class="page-subtitle">Ваши пройденные тесты и результаты</p>
+                </header>
+                
+                <div id="history-list" class="history-list">
+                    <div class="loading"><div class="spinner"></div>Загрузка...</div>
+                </div>
+            </div>
+
+            <!-- Stats Page -->
+            <div id="page-stats" class="page">
+                <header class="page-header">
+                    <h1>Ваша статистика</h1>
+                    <p class="page-subtitle">Общие показатели</p>
+                </header>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon tests-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-total-attempts">0</span>
+                            <span class="stat-label">Всего попыток</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon passed-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                                <polyline points="22,4 12,14.01 9,11.01"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-passed">0</span>
+                            <span class="stat-label">Сдано</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon score-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-best-score">0%</span>
+                            <span class="stat-label">Лучший результат</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon avg-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10"/>
+                                <line x1="18" y1="20" x2="18" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="16"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-avg-score">0%</span>
+                            <span class="stat-label">Средний балл</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="supabase.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

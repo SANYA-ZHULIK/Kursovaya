@@ -144,6 +144,17 @@ async function logout() {
     app.classList.add('hidden');
 }
 
+// Toggle sidebar on mobile
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+}
+
 function showApp() {
     authModal.classList.add('hidden');
     app.classList.remove('hidden');
@@ -165,6 +176,12 @@ function setupNavigation() {
 
 function navigateTo(page) {
     currentPage = page;
+    
+    // Close mobile sidebar on navigation
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
     
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');

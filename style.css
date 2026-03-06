@@ -35,6 +35,9 @@ html, body {
 
 .hidden { display: none !important; }
 
+/* Mobile Header (hidden on desktop) */
+.mobile-header { display: none; }
+
 /* Modal */
 .modal {
     position: fixed;
@@ -404,11 +407,238 @@ html, body {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
-    .main-content { margin-left: 0; max-width: 100%; padding: 20px; }
-    .tests-grid { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: 1fr; }
-    .result-stats { flex-direction: column; gap: 24px; }
-    .result-actions { flex-direction: column; }
-    .test-info-bar { flex-direction: column; gap: 8px; }
+    /* Mobile Header */
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        color: var(--text-primary);
+    }
+    
+    .mobile-menu-btn:hover {
+        background: var(--background);
+    }
+    
+    .mobile-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+    
+    /* Sidebar Overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    /* Main Content */
+    .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 16px;
+        padding-top: 20px;
+    }
+    
+    /* Page Header */
+    .page-header h1 {
+        font-size: 24px;
+    }
+    
+    .page-header .page-subtitle {
+        font-size: 14px;
+    }
+    
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+    }
+    
+    /* Tests Grid */
+    .tests-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .test-card {
+        padding: 16px;
+    }
+    
+    .test-card-title {
+        font-size: 16px;
+    }
+    
+    /* Test Info Bar */
+    .test-info-bar {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+    
+    /* Test Container */
+    .test-container {
+        padding: 16px;
+    }
+    
+    .test-question-text {
+        font-size: 16px;
+    }
+    
+    .test-option {
+        padding: 12px;
+    }
+    
+    .test-option-text {
+        font-size: 14px;
+    }
+    
+    .test-footer {
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+    
+    .test-footer .btn {
+        width: 100%;
+    }
+    
+    /* Test Result */
+    .test-result-card {
+        padding: 24px 16px;
+    }
+    
+    .result-score {
+        font-size: 36px;
+    }
+    
+    .result-stats {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+    
+    .result-stat-value {
+        font-size: 24px;
+    }
+    
+    .result-actions {
+        flex-direction: column;
+    }
+    
+    .result-actions .btn {
+        width: 100%;
+    }
+    
+    /* History */
+    .history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .history-score {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    /* Modal */
+    .modal {
+        padding: 16px;
+        align-items: flex-end;
+    }
+    
+    .modal-content {
+        padding: 24px 16px;
+        border-radius: var(--radius) var(--radius) 0 0;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    /* Auth */
+    .auth-header h2 {
+        font-size: 20px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    html, body {
+        font-size: 14px;
+    }
+    
+    .main-content {
+        padding: 12px;
+    }
+    
+    .page-header {
+        margin-bottom: 20px;
+    }
+    
+    .page-header h1 {
+        font-size: 20px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .test-card {
+        padding: 12px;
+    }
+    
+    .btn {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+    
+    .result-score {
+        font-size: 32px;
+    }
 }
